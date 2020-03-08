@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.ProfileActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#FCFCFC"
+                app:titleTextColor="#FF0000"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appBar"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#F0F0F0"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:text="Student ID"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins" />
+
+                <TextView
+                    android:id="@+id/uniqueId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Full Name   (Click below to edit)"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/fullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Phone   (Click below to edit)" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Username   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"
+                    android:text="Gender   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="13sp"
+                    android:text="Father's name   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/fatherName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Course   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Address   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:id="@+id/logout"
+                    android:layout_width="wrap_content"
+                    android:text="Log Out"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="#FF0000"
+                    android:drawableStart="@drawable/logout"
+                    android:drawablePadding="10dp"
+                    android:paddingStart="0dp"
+                    android:paddingTop="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingBottom="10dp"
+                    android:paddingEnd="20dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+</layout>
