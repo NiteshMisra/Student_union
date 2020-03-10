@@ -4,30 +4,30 @@ import com.google.gson.annotations.SerializedName;
 
 public class UpdateResponse {
 
-    @SerializedName("response_code")
-    private Integer responseCode;
+    @SerializedName("success")
+    private Boolean success;
 
-    @SerializedName("response_msg")
-    private String responseMsg;
+    @SerializedName("error")
+    private String error;
 
-    public UpdateResponse(Integer responseCode, String responseMsg) {
-        this.responseCode = responseCode;
-        this.responseMsg = responseMsg;
+    @SerializedName("result")
+    private Integer result;
+
+    public UpdateResponse(Boolean success, String error, Integer result) {
+        this.success = success;
+        this.error = error;
+        this.result = result;
     }
 
-    public Integer getResponseCode() {
-        return responseCode;
+    public Boolean getSuccess() {
+        return success;
     }
 
-    public String getResponseMsg() {
-        return responseMsg;
+    public String getError() {
+        return error;
     }
 
-    public void setResponseCode(Integer responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
+    public Integer getResult() {
+        return result;
     }
 }

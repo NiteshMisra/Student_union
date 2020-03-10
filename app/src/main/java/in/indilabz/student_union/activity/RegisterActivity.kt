@@ -7,6 +7,10 @@ import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
 import `in`.indilabz.student_union.databinding.ActivityRegisterBinding
 import `in`.indilabz.student_union.extras.DatePickerFragment
+import `in`.indilabz.student_union.model.Result
+import `in`.indilabz.student_union.model.Student
+import `in`.indilabz.student_union.response.RegisterResponse
+import `in`.indilabz.yorneeds.utils.INDIPreferences
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -128,10 +132,9 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         binding.swipe.isRefreshing = true
 
         RetrofitInstance.getRegisterRetrofit(
-            INDIMaster.api().register(
+            INDIMaster.newApi().register(
                 binding.phone.editText!!.text.toString(),
                 binding.fullName.editText!!.text.toString(),
-                gender,
                 binding.course.editText!!.text.toString(),
                 binding.email.editText!!.text.toString(),
                 binding.year.editText!!.text.toString(),
@@ -146,18 +149,42 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         )
     }
 
-    private val register = { _:Int, bool:Boolean, value:String ->
+    private val register = { _:Int, bool:Boolean, value:RegisterResponse ->
 
         binding.swipe.isRefreshing = false
 
-        if(bool){
+        if(bool && value.success){
 
             Toast.makeText(this, "Registered successfully", Toast.LENGTH_LONG).show()
+            val result: Result? = value.result
+            if (result != null) {
 
-            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                val student2 = Student(
+                    result.id,
+                    result.fullName,
+                    result.contactNumber,
+                    result.email,
+                    result.password,
+                    result.dob,
+                    result.course,
+                    result.year,
+                    result.college,
+                    result.fatherName,
+                    result.currentAddress,
+                    result.permanentAddress,
+                    result.createdAt,
+                    result.updatedAt
+                )
+
+                INDIPreferences.user(student2)
+                INDIPreferences.session(true)
+
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
         }
         else{
-            Toast.makeText(this, value, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, value.message, Toast.LENGTH_LONG).show()
         }
     }
 

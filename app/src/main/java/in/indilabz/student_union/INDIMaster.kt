@@ -40,6 +40,8 @@ class INDIMaster : Application(){
 
         private val api = RetrofitInstance.instance().create(API::class.java)
 
+        private val newApi = RetrofitInstance.newInstance().create(API::class.java)
+
         private val session = RetrofitInstance.session().create(API::class.java)
 
         private var linearLayoutManager: LinearLayoutManager? = null
@@ -75,6 +77,10 @@ class INDIMaster : Application(){
 
         fun api(): API {
             return api
+        }
+
+        fun newApi(): API {
+            return newApi
         }
 
         fun session(): API {

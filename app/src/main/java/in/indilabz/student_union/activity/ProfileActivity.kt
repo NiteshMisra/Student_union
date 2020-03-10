@@ -85,7 +85,7 @@ class ProfileActivity : AppCompatActivity() {
 
         RetrofitInstance.getRetrofit(
             INDIMaster.api().profile(
-                INDIPreferences.user()!!.student_p_id
+                INDIPreferences.user()!!.id.toString()
             )
         , result)
     }
@@ -147,14 +147,9 @@ class ProfileActivity : AppCompatActivity() {
         dialog.show()
 
         RetrofitInstance.updateRetrofit(
-            INDIMaster.api().update(
+            INDIMaster.api().updateName(
                 profile.id,
-                binding.fullName.text.toString(),
-                binding.phone.text.toString(),
-                binding.course.text.toString(),
-                binding.address.text.toString(),
-                binding.gender.text.toString(),
-                binding.fatherName.text.toString()
+                binding.fullName.text.toString()
             )
             , updateResult)
     }

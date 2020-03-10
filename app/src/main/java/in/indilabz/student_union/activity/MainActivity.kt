@@ -87,14 +87,14 @@ class MainActivity : AppCompatActivity() {
 
         RetrofitInstance.getDiscountRetrofit(
             INDIMaster.api().discount(
-                INDIPreferences.user()!!.student_id
+                INDIPreferences.user()!!.id.toString()
             )
             , result
         )
 
         RetrofitInstance.getDiscountInfoRetrofit(
             INDIMaster.api().discountInfo(
-                INDIPreferences.user()!!.student_id
+                INDIPreferences.user()!!.id.toString()
             )
             , stats
         )

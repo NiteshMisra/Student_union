@@ -9,6 +9,8 @@ interface Constants {
 
         //String APP_URL = "http://192.168.43.30/Hackplanet-Ads/index.php/v1";
         const val BASE_URL = "$APP_URL/"
+
+        const val BASE_URL2 = "http://3.19.184.22/student-union/index.php/api/v1/"
         const val APP_NAME = "STUDENT_ADMIN"
         const val INDIAN_RUPEE = "₹"
 

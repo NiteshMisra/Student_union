@@ -51,7 +51,7 @@ class ShopDetails : AppCompatActivity() {
         val uuid = UUID.randomUUID().toString()
 
         val discount = Discount(
-            INDIPreferences.user()!!.student_id,
+            INDIPreferences.user()!!.id.toString(),
             shop.discount)
 
         val bitmap = QRCodeHelper.newInstance(this)
@@ -62,7 +62,7 @@ class ShopDetails : AppCompatActivity() {
         //generateQR(INDIMaster.gson.toJson(discount))
         binding.qrCode.setImageBitmap(bitmap)
 
-        binding.studentName.text = INDIPreferences.user()!!.name
+        binding.studentName.text = INDIPreferences.user()!!.full_name
     }
 
     private fun generateQR(value: String){

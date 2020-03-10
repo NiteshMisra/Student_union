@@ -120,7 +120,7 @@ class RetrofitInstance : Constants {
 
     }
 
-    private class RegisterRetrofitAPI (private val retrofitListener: (Int, Boolean, String) -> Unit?, calls: Call<RegisterResponse>?) : AsyncTask<String, String, String>() {
+    private class RegisterRetrofitAPI (private val retrofitListener: (Int, Boolean, RegisterResponse) -> Unit?, calls: Call<RegisterResponse>?) : AsyncTask<String, String, String>() {
 
         init {
             registerCall = calls
@@ -138,17 +138,20 @@ class RetrofitInstance : Constants {
 
                             //Log.d("TAG_RETROFIT_RESULT", response.body()!!)
 
-                            val registerResponse = response.body()!!
-                            if (registerResponse.responseCode == 200){
-                                retrofitListener.invoke(response.code(), true, response.body()!!.responseMsg)
+                            val registerResponse : RegisterResponse = response.body()!!
+                            if (registerResponse.success){
+                                retrofitListener.invoke(response.code(), true, registerResponse)
                             }else{
-                                retrofitListener.invoke(response.code(), true, response.body()!!.contactNumber)
+                                retrofitListener.invoke(response.code(), false, registerResponse)
                             }
                         } catch (e: Exception) {
 
                             Log.d("TAG_RETROFIT_ERROR", e.toString())
 
-                            retrofitListener.invoke(response.code(), false, "Error while getting data")
+                            retrofitListener.invoke(
+                                response.code(), false,
+                                RegisterResponse(false, "", e.toString(), null)
+                            )
                         }
 
                     } else {
@@ -177,16 +180,20 @@ class RetrofitInstance : Constants {
 
                             } else {
 
-                                retrofitListener.invoke(response.code(),
-                                    false, apiError.error!!)
+                                retrofitListener.invoke(
+                                    response.code(), false,
+                                    RegisterResponse(false, "", apiError.error, null)
+                                )
                             }
                         } catch (e: Exception) {
 
                             /// Log.d("TAG_EXCEPTION_ERROR", e.toString())
 
                             try{
-                                retrofitListener.invoke(response.code(),
-                                    false, "Error while fetching data!")
+                                retrofitListener.invoke(
+                                    response.code(), false,
+                                    RegisterResponse(false, "","Error while fetching data", null)
+                                )
                             }
                             catch (e : Exception){
                                 e.printStackTrace()
@@ -201,7 +208,10 @@ class RetrofitInstance : Constants {
 
                     //Log.d("TAG_RETROFIT_THROW", t.message)
                     try{
-                        retrofitListener.invoke(404, false, "Please check your internet connection")
+                        retrofitListener.invoke(
+                            404, false,
+                            RegisterResponse(false, "", "Please check your internet connection", null)
+                        )
                     }catch (e : Exception){
                         e.printStackTrace()
                     }
@@ -448,11 +458,11 @@ class RetrofitInstance : Constants {
 
                             //Log.d("TAG_RETROFIT_RESULT", response.body()!!)
 
-                            val discountInfoResponse = response.body()!!
-                            if (discountInfoResponse.responseCode == 200){
-                                retrofitListener.invoke(response.code(), true, response.body()!!.responseMsg)
+                            val updateResponse = response.body()!!
+                            if (updateResponse.success){
+                                retrofitListener.invoke(response.code(), true, updateResponse.error)
                             }else{
-                                retrofitListener.invoke(response.code(), true, response.body()!!.responseMsg)
+                                retrofitListener.invoke(response.code(), false, updateResponse.error)
                             }
                         } catch (e: Exception) {
 
@@ -533,7 +543,7 @@ class RetrofitInstance : Constants {
 
     }
 
-    private class LoginRetrofitAPI (private val retrofitListener: (Int, Boolean, LoginResponse) -> Unit?, calls: Call<LoginResponse>?) : AsyncTask<String, String, String>() {
+    private class LoginRetrofitAPI (private val retrofitListener: (Int, Boolean, RegisterResponse) -> Unit?, calls: Call<RegisterResponse>?) : AsyncTask<String, String, String>() {
 
         init {
             loginCall = calls
@@ -541,9 +551,9 @@ class RetrofitInstance : Constants {
 
         override fun doInBackground(vararg params: String?): String? {
 
-            loginCall!!.clone().enqueue(object : Callback<LoginResponse> {
+            loginCall!!.clone().enqueue(object : Callback<RegisterResponse> {
 
-                override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+                override fun onResponse(call: Call<RegisterResponse>?, response: Response<RegisterResponse>?) {
 
                     if (response!!.isSuccessful) {
 
@@ -553,10 +563,7 @@ class RetrofitInstance : Constants {
 
                             val loginResponse = response.body()!!
 
-                            Log.e("Login",loginResponse.toString())
-
-                            if (loginResponse.loginStatus){
-
+                            if (loginResponse.success){
                                 retrofitListener.invoke(response.code(), true, loginResponse)
                             }else{
                                 retrofitListener.invoke(response.code(), false, loginResponse)
@@ -613,16 +620,14 @@ class RetrofitInstance : Constants {
 
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
 
                     //Log.d("TAG_RETROFIT_THROW", t.message)
                     try{
 
-                        val loginResponse2 = LoginResponse("", "", "", "", "", "",
-                            "", "", "", "", "", "", "",
-                            "", "", false,t.message)
-
+                        val loginResponse2 = RegisterResponse(false, "",t.message,null)
                         retrofitListener.invoke(404, false, loginResponse2)
+
                     }catch (e : Exception){
                         e.printStackTrace()
                     }
@@ -645,7 +650,6 @@ class RetrofitInstance : Constants {
     }
 
 
-
     companion object {
 
         private var retrofit: Retrofit? = null
@@ -655,7 +659,7 @@ class RetrofitInstance : Constants {
         private var updateCall : Call<UpdateResponse>? = null
         private var discountInfoCall : Call<DiscountInfoResponse>? = null
         private var registerCall : Call<RegisterResponse>? = null
-        private var loginCall : Call<LoginResponse>? = null
+        private var loginCall : Call<RegisterResponse>? = null
 
         fun instance(): Retrofit {
 
@@ -676,6 +680,29 @@ class RetrofitInstance : Constants {
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
+
+            return retrofit as Retrofit
+        }
+
+        fun newInstance(): Retrofit {
+
+            client = OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.MINUTES)
+                .readTimeout(10, TimeUnit.MINUTES)
+                .writeTimeout(10, TimeUnit.MINUTES)
+                .addInterceptor { chain ->
+                    val newRequest = chain.request().newBuilder()
+                        .build()
+                    chain.proceed(newRequest)
+                }.build()
+
+
+            retrofit = Retrofit.Builder()
+                .client(client!!)
+                .baseUrl(Constants.BASE_URL2)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
             return retrofit as Retrofit
         }
@@ -709,7 +736,7 @@ class RetrofitInstance : Constants {
             RetrofitAPI(retrofitListener, call).execute()
         }
 
-        fun getLoginRetrofit(call: Call<LoginResponse>?, retrofitListener: (Int, Boolean, LoginResponse) -> Unit?) {
+        fun getLoginRetrofit(call: Call<RegisterResponse>?, retrofitListener: (Int, Boolean, RegisterResponse) -> Unit?) {
             LoginRetrofitAPI(retrofitListener, call).execute()
         }
 
@@ -717,7 +744,7 @@ class RetrofitInstance : Constants {
             DiscountRetrofitAPI(retrofitListener, call).execute()
         }
 
-        fun getRegisterRetrofit(call: Call<RegisterResponse>?, retrofitListener: (Int, Boolean, String) -> Unit?) {
+        fun getRegisterRetrofit(call: Call<RegisterResponse>?, retrofitListener: (Int, Boolean, RegisterResponse) -> Unit?) {
             RegisterRetrofitAPI(retrofitListener, call).execute()
         }
 

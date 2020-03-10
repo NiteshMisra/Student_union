@@ -11,30 +11,27 @@ import retrofit2.http.*
 interface API {
 
     @FormUrlEncoded
-    @POST("api/api/student")
+    @POST("student/")
     fun register(
-        @Field("contact_number") contact_number: String,
-        @Field("full-name") full_name: String,
-        @Field("gender") gender: String,
+        @Field("phone") contact_number: String,
+        @Field("full_name") full_name: String,
         @Field("course") course: String,
         @Field("email") email: String,
-        @Field("year") year: String,
+        @Field("course_year") year: String,
         @Field("father_name") father_name: String,
         @Field("current_address") current_address: String,
-        @Field("paramanent_address") paramanent_address: String,
+        @Field("permanent_address") paramanent_address: String,
         @Field("dob") dob: String,
         @Field("college") college: String,
         @Field("password") password: String
     ): Call<RegisterResponse>
 
     @FormUrlEncoded
-    @POST("admin")
+    @POST("auth/student/")
     fun login(
-        @Field("username") contact_number: String,
-        @Field("password") password: String,
-        @Field("from") from: String,
-        @Field("user_type") user_type: String
-    ): Call<LoginResponse>
+        @Field("email") email: String,
+        @Field("password") password: String
+    ): Call<RegisterResponse>
 
     @GET("api/api/discount/{student_id}")
     fun discount(
@@ -47,15 +44,10 @@ interface API {
     ): Call<String>
 
     @FormUrlEncoded
-    @POST("api/api/studentupdate")
-    fun update(
-        @Field("id") id: String,
-        @Field("name") fullName: String,
-        @Field("contact_number") phone: String,
-        @Field("course") course: String,
-        @Field("current_address") address: String,
-        @Field("gender") gender: String,
-        @Field("father_name") fatherName: String
+    @PUT("student/{student_id}")
+    fun updateName(
+        @Path("student_id") studentId : String,
+        @Field("full_name") id: String
     ): Call<UpdateResponse>
 
     @GET("api/api/studentdiscountcheck/{id}")
