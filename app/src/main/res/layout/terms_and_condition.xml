@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.TermsAndCondition">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:text="Terms &amp; Conditions"
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:text="Please read the following Terms and Conditions carefully before Registration."
+        android:fontFamily="@font/poppins"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="15dp"
+        android:textColor="#444444"
+        android:textSize="13sp"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="Student support service i.e. SSS not provide any own payment app."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="SSS is work on consult between students and shopkeepers."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="SSS is not selling own brands."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="Head office of SSS is Greater Noida."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="SSS not ask to share your OTP to anyone."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="10dp"
+            android:src="@drawable/ic_dot"
+            android:layout_marginTop="6dp"
+            android:layout_height="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginStart="10dp"
+            android:text="Refund Policy is directly consulted to the shopkeeper."
+            android:textSize="13sp"
+            android:textColor="#444444"
+            android:fontFamily="@font/poppins"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
