@@ -2,63 +2,97 @@
 
 package `in`.indilabz.student_union.activity
 
-import `in`.indilabz.student_union.rest.RetrofitInstance
 import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
 import `in`.indilabz.student_union.databinding.ActivityRegisterBinding
 import `in`.indilabz.student_union.extras.DatePickerFragment
-import `in`.indilabz.student_union.model.Result
-import `in`.indilabz.student_union.model.Student
-import `in`.indilabz.student_union.response.RegisterResponse
-import `in`.indilabz.yorneeds.utils.INDIPreferences
-import android.app.Activity
+import `in`.indilabz.student_union.model.Register
+import `in`.indilabz.student_union.response.UpdateResponse
+import `in`.indilabz.student_union.rest.RetrofitInstance
+import `in`.indilabz.student_union.utils.Toaster
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import java.io.ByteArrayOutputStream
-import java.lang.Exception
-import java.util.*
+import com.google.gson.Gson
+import dmax.dialog.SpotsDialog
 
-class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
+class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
+    DatePickerDialog.OnDateSetListener {
 
     private lateinit var binding: ActivityRegisterBinding
-    private var genderSelected : Boolean = false
-    private lateinit var gender : String
-    private var dateOfBirth : String = ""
+    private var genderSelected: Boolean = false
+    private var jobSelected: Boolean = false
+    private var accSelected: Boolean = false
+    private lateinit var gender: String
+    private lateinit var job : String
+    private lateinit var accommodation : String
+    private var dateOfBirth: String = ""
+    private var serverOtp : String ?= null
+    private lateinit var jobAdapter : ArrayAdapter<CharSequence>
+    private lateinit var genderAdapter : ArrayAdapter<CharSequence>
+    private lateinit var accAdapter: ArrayAdapter<CharSequence>
+    private lateinit var dialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this,
+        binding = DataBindingUtil.setContentView(
+            this,
             R.layout.activity_register
         )
 
-        binding.dob.setOnClickListener{
+        dialog = SpotsDialog.Builder().setContext(this).build()
+        binding.dob.setOnClickListener {
             val datePicker = DatePickerFragment(this)
-            datePicker.show(supportFragmentManager,"date picker")
+            datePicker.show(supportFragmentManager, "date picker")
         }
 
-        val adapter = ArrayAdapter.createFromResource(this,R.array.genderArray,android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.genderSpinner.adapter = adapter
+        binding.termsCondition.setOnClickListener {
+            startActivity(Intent(this,TermsAndCondition::class.java))
+        }
 
+        genderAdapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.genderArray,
+            android.R.layout.simple_spinner_item
+        )
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.genderSpinner.adapter = genderAdapter
         binding.genderSpinner.onItemSelectedListener = this
 
-        if (binding.currentAddress.text!!.isEmpty()){
+        jobAdapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.jobArray,
+            android.R.layout.simple_spinner_item
+        )
+        jobAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.job.adapter = jobAdapter
+        binding.job.onItemSelectedListener = this
+
+        accAdapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.accomodationArray,
+            android.R.layout.simple_spinner_item
+        )
+        accAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.accomodation.adapter = accAdapter
+        binding.accomodation.onItemSelectedListener = this
+
+        if (binding.currentAddress.text!!.isEmpty()) {
             binding.addressCheckBox.isEnabled = false
         }
 
-        binding.currentAddress.addTextChangedListener(object : TextWatcher{
+        binding.currentAddress.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -69,59 +103,101 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.addressCheckBox.isEnabled = binding.currentAddress.text!!.isNotEmpty()
-                if (binding.addressCheckBox.isChecked){
+                if (binding.addressCheckBox.isChecked) {
                     binding.permanentAddress.text = binding.currentAddress.text
                 }
             }
 
         })
 
-        binding.addressCheckBox.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
-            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                if (isChecked){
-                    if (binding.currentAddress.text!!.isNotEmpty()){
-                        binding.permanentAddress.text = binding.currentAddress.text
-                    }
-                }else{
-                    binding.permanentAddress.setText("")
+        binding.addressCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (binding.currentAddress.text!!.isNotEmpty()) {
+                    binding.permanentAddress.text = binding.currentAddress.text
                 }
+            } else {
+                binding.permanentAddress.setText("")
             }
-
-        })
+        }
 
         binding.submit.setOnClickListener {
 
-            if(binding.phone.editText!!.text.length == 10 &&
-
-                binding.fullName.editText!!.text.isNotEmpty() &&
-
-                genderSelected &&
-
-                binding.course.editText!!.text.isNotEmpty() &&
-
-                binding.email.editText!!.text.isNotEmpty() &&
-
-                binding.year.editText!!.text.isNotEmpty() &&
-
-                binding.fName.editText!!.text.isNotEmpty() &&
-
-                binding.curAddress.editText!!.text.isNotEmpty() &&
-
-                binding.perAddress.editText!!.text.isNotEmpty() &&
-
-                dateOfBirth.isNotEmpty() &&
-
-                binding.college.editText!!.text.isNotEmpty() &&
-
-                binding.password.editText!!.text.length>4)
-            {
-
-                executeRegister()
+            if (binding.phone.editText!!.text.length != 10){
+                Toaster.longt("Enter valid phone no.")
+                return@setOnClickListener
             }
-            else{
 
-                Toast.makeText(this, "Invalid form data!", Toast.LENGTH_LONG).show()
+            if (binding.fullName.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your name")
+                return@setOnClickListener
             }
+
+            if (!genderSelected){
+                Toaster.longt("Select your gender")
+                return@setOnClickListener
+            }
+
+            if (!jobSelected){
+                Toaster.longt("Select the job")
+                return@setOnClickListener
+            }
+
+            if (binding.year.editText!!.text.isEmpty()){
+                Toaster.longt("Enter the year of joining the course")
+                return@setOnClickListener
+            }
+
+            if (binding.email.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your email Id")
+                return@setOnClickListener
+            }
+
+            if (binding.course.editText!!.text.isEmpty()){
+                Toaster.longt("Enter the course name")
+                return@setOnClickListener
+            }
+
+            if (!accSelected){
+                Toaster.longt("Select the accommodation")
+                return@setOnClickListener
+            }
+
+            if (binding.password.editText!!.text.length <= 4){
+                Toaster.longt("Password must be greater than 4 digit")
+                return@setOnClickListener
+            }
+
+            if (binding.college.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your college name")
+                return@setOnClickListener
+            }
+
+            if (dateOfBirth.isEmpty()){
+                Toaster.longt("Enter your Date of Birth")
+                return@setOnClickListener
+            }
+
+            if (binding.perAddress.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your Permanent Address")
+                return@setOnClickListener
+            }
+
+            if (binding.curAddress.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your Current Address")
+                return@setOnClickListener
+            }
+
+            if (binding.fName.editText!!.text.isEmpty()){
+                Toaster.longt("Enter your Father's Name")
+                return@setOnClickListener
+            }
+
+            if (binding.password.editText!!.text != binding.confirmPassword.editText!!.text){
+                Toaster.longt("Password not matching")
+                return@setOnClickListener
+            }
+
+            executeRegister()
         }
 
         binding.swipe.setOnRefreshListener { binding.swipe.isRefreshing = false }
@@ -129,10 +205,27 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
     private fun executeRegister() {
 
-        binding.swipe.isRefreshing = true
+        dialog.setTitle("Please wait...")
+        dialog.setMessage("Sending OTP...")
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.show()
 
-        RetrofitInstance.getRegisterRetrofit(
-            INDIMaster.newApi().register(
+        RetrofitInstance.getOTPRetrofit(
+            INDIMaster.newApi().sendOtp(
+                binding.phone.editText!!.text.toString()
+            ),
+            otp
+        )
+    }
+
+    private val otp = { _: Int, bool: Boolean, value: UpdateResponse ->
+
+        if (bool && value.result != null) {
+
+            dialog.dismiss()
+            serverOtp = value.result.toString()
+
+            val register = Register(
                 binding.phone.editText!!.text.toString(),
                 binding.fullName.editText!!.text.toString(),
                 binding.course.editText!!.text.toString(),
@@ -143,67 +236,67 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 binding.perAddress.editText!!.text.toString(),
                 dateOfBirth,
                 binding.college.editText!!.text.toString(),
-                binding.password.editText!!.text.toString()
-            ),
-            register
-        )
-    }
+                binding.password.editText!!.text.toString(),
+                gender,
+                job,
+                accommodation
+            )
 
-    private val register = { _:Int, bool:Boolean, value:RegisterResponse ->
+            val intent = Intent(this,OTPActivity::class.java)
+            intent.putExtra("GSON", Gson().toJson(register))
+            intent.putExtra("Otp",serverOtp)
+            startActivity(intent)
 
-        binding.swipe.isRefreshing = false
-
-        if(bool && value.success){
-
-            Toast.makeText(this, "Registered successfully", Toast.LENGTH_LONG).show()
-            val result: Result? = value.result
-            if (result != null) {
-
-                val student2 = Student(
-                    result.id,
-                    result.fullName,
-                    result.contactNumber,
-                    result.email,
-                    result.password,
-                    result.dob,
-                    result.course,
-                    result.year,
-                    result.college,
-                    result.fatherName,
-                    result.currentAddress,
-                    result.permanentAddress,
-                    result.createdAt,
-                    result.updatedAt
-                )
-
-                INDIPreferences.user(student2)
-                INDIPreferences.session(true)
-
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
-        }
-        else{
+        } else {
+            dialog.dismiss()
             Toast.makeText(this, value.message, Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        dateOfBirth = "$year-$month-$dayOfMonth"
+        dateOfBirth = "$dayOfMonth-${month + 1}-$year"
         binding.dob.text = dateOfBirth
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (position != 0){
-            gender = parent!!.getItemAtPosition(position).toString()
-            genderSelected = true
-        }else{
-            genderSelected = false
+
+        if (parent!!.adapter == genderAdapter){
+            if (position != 0) {
+                gender = parent.getItemAtPosition(position).toString()
+                genderSelected = true
+            } else {
+                genderSelected = false
+            }
+        }else if (parent.adapter == jobAdapter){
+            if (position != 0) {
+                job = parent.getItemAtPosition(position).toString()
+                jobSelected = true
+            } else {
+                jobSelected = false
+            }
+        }else if (parent.adapter == accAdapter){
+            if (position != 0) {
+                accommodation = parent.getItemAtPosition(position).toString()
+                accSelected = true
+            } else {
+                accSelected = false
+            }
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        genderSelected = false
+        when {
+            parent!!.adapter == jobAdapter -> jobSelected = false
+            parent.adapter == genderAdapter -> genderSelected = false
+            parent.adapter == accAdapter -> accSelected = false
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (dialog.isShowing){
+            dialog.dismiss()
+        }
     }
 
 }

@@ -19,8 +19,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#FCFCFC"
-                app:titleTextColor="#FF0000"
+                app:title="Profile"
+                android:background="@color/appBar"
+                app:titleTextColor="#FCFCFC"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -29,21 +30,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/appBar"
+            android:scrollbars="none"
             android:overScrollMode="never">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#F0F0F0"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:background="#F0F0F0">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp">
+
+                    <ImageView
+                        android:id="@+id/profileImage"
+                        android:layout_width="match_parent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_person"
+                        android:background="#D9CCDF"
+                        android:layout_marginBottom="25dp"
+                        android:layout_height="match_parent"/>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/change_image"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        app:backgroundTint="@color/appBar"
+                        app:srcCompat="@drawable/ic_add_a_photo"
+                        tools:ignore="VectorDrawableCompat"
+                        android:layout_marginEnd="16dp"
+                        android:background="@drawable/ic_person"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:text="Student ID"
                     android:textSize="13sp"
                     android:fontFamily="@font/poppins" />
@@ -54,6 +83,8 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rect_gray"
                     android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"
@@ -64,12 +95,16 @@
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/poppins"
                     android:text="Full Name   (Click below to edit)"
                     android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/fullName"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rect_gray"
@@ -83,7 +118,81 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="13sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginTop="20dp"
+                    android:text="Gender   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="14sp"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="13sp"
+                    android:text="Father's name   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/fatherName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColorHint="@color/black"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"
+                    android:text="Date of Birth   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/dob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:textSize="13sp"
                     android:fontFamily="@font/poppins"
                     android:text="Phone   (Click below to edit)" />
@@ -95,26 +204,8 @@
                     android:background="@drawable/rect_gray"
                     android:padding="10dp"
                     android:textSize="14sp"
-                    android:fontFamily="@font/poppins"
-                    android:textColorHint="@color/black"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/black"
-                    android:layout_marginTop="20dp"
-                    android:textSize="13sp"
-                    android:fontFamily="@font/poppins"
-                    android:text="Username   (Click below to edit)"/>
-
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rect_gray"
-                    android:padding="10dp"
-                    android:textSize="14sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/poppins"
                     android:textColorHint="@color/black"
                     android:textColor="@color/black"/>
@@ -124,16 +215,20 @@
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
                     android:fontFamily="@font/poppins"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:textSize="13sp"
                     android:layout_marginTop="20dp"
-                    android:text="Gender   (Click below to edit)"/>
+                    android:text="Email"/>
 
                 <TextView
-                    android:id="@+id/gender"
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rect_gray"
                     android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/poppins"
                     android:textSize="14sp"
                     android:textColorHint="@color/black"
@@ -144,47 +239,9 @@
                     android:layout_height="wrap_content"
                     android:textColorHint="@color/black"
                     android:layout_marginTop="20dp"
-                    android:fontFamily="@font/poppins"
                     android:textSize="13sp"
-                    android:text="Father's name   (Click below to edit)"/>
-
-                <TextView
-                    android:id="@+id/fatherName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rect_gray"
-                    android:padding="10dp"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/black"
-                    android:layout_marginTop="20dp"
-                    android:textSize="13sp"
-                    android:fontFamily="@font/poppins"
-                    android:text="Course   (Click below to edit)"/>
-
-                <TextView
-                    android:id="@+id/course"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rect_gray"
-                    android:padding="10dp"
-                    android:fontFamily="@font/poppins"
-                    android:textSize="14sp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@color/black"
-                    android:layout_marginTop="20dp"
-                    android:textSize="13sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:fontFamily="@font/poppins"
                     android:text="Address   (Click below to edit)"/>
 
@@ -195,25 +252,135 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/rect_gray"
                     android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:textSize="14sp"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/black"
                     android:textColorHint="@color/black"/>
 
                 <TextView
-                    android:id="@+id/logout"
-                    android:layout_width="wrap_content"
-                    android:text="Log Out"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:textColor="#FF0000"
-                    android:drawableStart="@drawable/logout"
-                    android:drawablePadding="10dp"
-                    android:paddingStart="0dp"
-                    android:paddingTop="10dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingEnd="20dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:textSize="13sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Accommodation Type  (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/accomodation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="13sp"
+                    android:layout_marginTop="20dp"
+                    android:text="College   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/college"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Course   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/course"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Interseted in Part time Job   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/part_time_job"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Course Year   (Click below to edit)"/>
+
+                <TextView
+                    android:id="@+id/course_year"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rect_gray"
+                    android:padding="10dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"/>
 
             </LinearLayout>
 

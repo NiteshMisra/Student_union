@@ -2,141 +2,124 @@ package `in`.indilabz.student_union.activity
 
 import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
-import `in`.indilabz.student_union.model.Shop
-import `in`.indilabz.student_union.adapter.ShopAdapter
-import `in`.indilabz.student_union.databinding.ActivityMainBinding
-import `in`.indilabz.student_union.response.DiscountInfoResponse
-import `in`.indilabz.student_union.response.DiscountResponse
-import `in`.indilabz.student_union.rest.APIHelper
+import `in`.indilabz.student_union.fragment.HomeFragment
+import `in`.indilabz.student_union.response.CategoryResponse
 import `in`.indilabz.student_union.rest.RetrofitInstance
-import `in`.indilabz.student_union.utils.Toaster
 import `in`.indilabz.yorneeds.utils.INDIPreferences
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.SearchView
-import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.GridLayoutManager
-import java.util.*
-import kotlin.collections.ArrayList
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val datum: ArrayList<Shop> = ArrayList()
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: ShopAdapter
+    private lateinit var fragmentManager: FragmentManager
+
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+
+        when(p0.itemId){
+            R.id.nav_home -> {
+                addFragment(HomeFragment())
+            }
+
+            R.id.nav_profile-> {
+                startActivity(Intent(this,ProfileActivity::class.java))
+            }
+
+            R.id.nav_terms -> {
+                startActivity(Intent(this,TermsAndCondition::class.java))
+            }
+
+            R.id.nav_logout -> {
+                INDIPreferences.session(false)
+                startActivity(Intent(this,LoginActivity::class.java))
+                finish()
+            }
+
+            R.id.nav_support -> {
+                startActivity(Intent(this,HelpDesk::class.java))
+            }
+
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun addFragment(fragment : Fragment){
+
+        fragmentManager.beginTransaction()
+            .replace(R.id.fragment,fragment)
+            .addToBackStack(fragment.tag)
+            .commit()
+    }
+
+    private lateinit var drawerLayout : DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(
-            this,
-            R.layout.activity_main
-        )
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
-        setSupportActionBar(binding.toolbar!!)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
 
-        val manager = GridLayoutManager(this, 2)
+        val toggle = ActionBarDrawerToggle(this,drawerLayout,toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close)
 
-        binding.recycler.layoutManager = manager
-        binding.recycler.setHasFixedSize(true)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
 
-        binding.profile.setOnClickListener {
-            startActivity(Intent(this, ProfileActivity::class.java))
+        navigationView.setCheckedItem(R.id.nav_home)
+        if(savedInstanceState == null){
+            fragmentManager = supportFragmentManager
+            fragmentManager.beginTransaction()
+                .replace(R.id.fragment,HomeFragment())
+                .commit()
         }
 
-        binding.search.addTextChangedListener(object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.noti_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when(item.itemId){
+            R.id.nav_notify -> {
+                startActivity(Intent(this,Notification::class.java))
+                return true
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (datum.size > 0){
-                    val filterList : ArrayList<Shop> = ArrayList()
-                    for (item in datum){
-                        if (item.category.toLowerCase(Locale.getDefault()).contains(s!!.toString().toLowerCase(Locale.getDefault()))){
-                            filterList.add(item)
-                        }
-                    }
-                    adapter.updateList(filterList)
-
-                }
-            }
-
-        })
-
-        getData()
-
-        binding.swipe.setOnRefreshListener {
-            getData()
         }
+        return super.onOptionsItemSelected(item)
     }
 
-    private fun getData() {
+    override fun onBackPressed() {
 
-        binding.swipe.isRefreshing = true
-
-        binding.allotted.text = "..."
-        binding.discount.text = "..."
-        binding.amount.text = "..."
-
-        RetrofitInstance.getDiscountRetrofit(
-            INDIMaster.api().discount(
-                INDIPreferences.user()!!.id.toString()
-            )
-            , result
-        )
-
-        RetrofitInstance.getDiscountInfoRetrofit(
-            INDIMaster.api().discountInfo(
-                INDIPreferences.user()!!.id.toString()
-            )
-            , stats
-        )
-    }
-
-    private val result = { _: Int, bool: Boolean, value: DiscountResponse ->
-
-        binding.swipe.isRefreshing = false
-
-        if (bool) {
-
-            val datumList = ArrayList<Shop>()
-            for (item: Shop in value.results) {
-                datumList.add(item)
-            }
-
-            datum.clear()
-            datum.addAll(datumList)
-
-            binding.allotted.text = datum.size.toString()
-
-            adapter = ShopAdapter(datum)
-            binding.recycler.adapter = adapter
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    private val stats = { _: Int, bool: Boolean, value: DiscountInfoResponse ->
-
-        if (bool) {
-
-            binding.discount.text = value.discount
-            binding.amount.text = value.amount
-
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
         } else {
 
-            binding.allotted.text = "0"
-            binding.discount.text = "0"
-            binding.amount.text = "0"
-
-            Toaster.longt("Error while getting stats")
+            if (fragmentManager.backStackEntryCount > 0){
+                fragmentManager.popBackStack();
+            }else{
+                super.onBackPressed()
+            }
         }
+
     }
 
 }

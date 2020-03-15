@@ -2,18 +2,22 @@ package `in`.indilabz.student_union.model
 
 data class
 Student(
-    val id: Int,
-    val full_name: String,
-    val phone : String,
-    val email : String,
-    val password : String,
-    val dob : String,
-    val course: String,
-    val course_year: String,
-    val college: String,
-    val father_name: String,
-    val current_address: String,
-    val permanent_address: String,
-    val created_at : String,
-    val updated_at : String
+    var id: Int,
+    var full_name: String,
+    var phone : String,
+    var email : String,
+    var imageUrl : String,
+    var password : String,
+    var dob : String,
+    var course: String,
+    var course_year: String,
+    var college: String,
+    var father_name: String,
+    var current_address: String,
+    var permanent_address: String,
+    var created_at : String,
+    var updated_at : String,
+    var gender : String,
+    var job : String,
+    var accommodation : String
 )

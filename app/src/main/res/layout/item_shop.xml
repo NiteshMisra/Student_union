@@ -55,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Address"
+                    android:alpha="0.6"
                     android:textSize="13sp"
                     android:layout_marginStart="3dp"
                     android:fontFamily="@font/poppins"

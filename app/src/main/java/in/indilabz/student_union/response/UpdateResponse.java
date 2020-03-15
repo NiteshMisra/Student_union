@@ -2,6 +2,8 @@ package in.indilabz.student_union.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.Nullable;
+
 public class UpdateResponse {
 
     @SerializedName("success")
@@ -10,13 +12,22 @@ public class UpdateResponse {
     @SerializedName("error")
     private String error;
 
+    @SerializedName("message")
+    private String message;
+
+    @Nullable
     @SerializedName("result")
     private Integer result;
 
-    public UpdateResponse(Boolean success, String error, Integer result) {
+    public UpdateResponse(Boolean success, String error,String message, @Nullable Integer result) {
         this.success = success;
         this.error = error;
+        this.message = message;
         this.result = result;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public Boolean getSuccess() {
@@ -27,7 +38,7 @@ public class UpdateResponse {
         return error;
     }
 
-    public Integer getResult() {
+    public @Nullable Integer getResult() {
         return result;
     }
 }

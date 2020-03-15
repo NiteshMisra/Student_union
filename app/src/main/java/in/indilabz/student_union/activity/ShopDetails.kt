@@ -6,6 +6,7 @@ import `in`.indilabz.student_union.R
 import `in`.indilabz.student_union.model.Shop
 import `in`.indilabz.student_union.databinding.LayoutShopBottomBinding
 import `in`.indilabz.student_union.model.Discount
+import `in`.indilabz.student_union.model.ShopResult
 import `in`.indilabz.yorneeds.utils.INDIPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -32,57 +33,36 @@ class ShopDetails : AppCompatActivity() {
 
         val value = intent.getStringExtra("GSON")
 
-        val shop: Shop = Gson().fromJson(value, Shop::class.java)
+        val shop: ShopResult = Gson().fromJson(value, ShopResult::class.java)
 
         binding.toolbar.setNavigationOnClickListener{
             this.finish()
         }
 
-        binding.name.text = shop.shop_name
-        binding.offer.text = shop.discount+" %"
-        binding.categories.text = shop.category
+        binding.name.text = shop.shopResponseModel.name
+        binding.offer.text = "${shop.discount} %"
+        binding.categories.text = shop.shopResponseModel.category.toString()
 
         Glide.with(this)
-            .load(shop.user_img)
+            .load(shop.shopResponseModel.shop_image)
             .into(binding.preview)
 
-        binding.address.text = shop.current_address
-
-        val uuid = UUID.randomUUID().toString()
+        binding.address.text = shop.shopResponseModel.currentAddress
 
         val discount = Discount(
-            INDIPreferences.user()!!.id.toString(),
-            shop.discount)
+            shop.id.toString(),
+            shop.studentId.toString(),
+            shop.shopResponseModel.id.toString(),
+            shop.discount.toString(),
+            shop.allowedDiscount.toString())
 
         val bitmap = QRCodeHelper.newInstance(this)
             .setContent(INDIMaster.gson.toJson(discount))
             .setErrorCorrectionLevel(ErrorCorrectionLevel.Q)
             .qrcOde
 
-        //generateQR(INDIMaster.gson.toJson(discount))
         binding.qrCode.setImageBitmap(bitmap)
 
         binding.studentName.text = INDIPreferences.user()!!.full_name
-    }
-
-    private fun generateQR(value: String){
-
-        val renderOption = RenderOption()
-        renderOption.content = value // content to encode
-        renderOption.size = 800 // size of the final QR code image
-        renderOption.borderWidth = 20 // width of the empty space around the QR code
-        renderOption.ecl = ErrorCorrectionLevel.M // (optional) specify an error correction level
-        renderOption.patternScale = 0.35f // (optional) specify a scale for patterns
-        renderOption.roundedPatterns = true // (optional) if true, blocks will be drawn as dots instead
-        renderOption.clearBorder = true // if set to true, the background will NOT be drawn on the border area
-
-        val result = AwesomeQrRenderer.renderAsync(renderOption, { result ->
-            if (result.bitmap != null) {
-                // play with the bitmap
-                binding.qrCode.setImageBitmap(result.bitmap)
-            }
-        }, {
-                exception -> exception.printStackTrace()
-        })
     }
 }

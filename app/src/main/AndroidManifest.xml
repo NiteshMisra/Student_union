@@ -14,8 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.HelpDesk"
+        <activity android:name=".activity.ForgotPassword"
             android:theme="@style/MaterialTheme"/>
+        <activity android:name=".activity.TermsAndCondition" />
+        <activity android:name=".activity.Notification" />
+        <activity
+            android:name=".activity.HelpDesk"
+            android:theme="@style/MaterialTheme" />
         <activity android:name=".activity.OTPActivity">
 
             <!--
@@ -26,12 +31,14 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".activity.ProfileActivity" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:parentActivityName=".activity.MainActivity" />
         <activity android:name=".activity.ShopDetails" />
         <activity
             android:name=".activity.RegisterActivity"
             android:theme="@style/MaterialTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/MaterialTheme"
@@ -43,8 +50,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustNothing"/>
+        <activity
+            android:name=".activity.MainActivity"
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -6,6 +6,7 @@ import `in`.indilabz.student_union.utils.Constants
 import android.app.Activity
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 class INDIPreferences : Constants {
@@ -99,6 +100,31 @@ class INDIPreferences : Constants {
                return datum
             } else
                 return null
+        }
+
+        ////////////////////////////// Category
+
+        fun category(categories : ArrayList<String>) {
+
+            val editor = preferences.edit()
+            val gson = Gson()
+            val jsonDatum = gson.toJson(categories)
+            editor.putString("category", jsonDatum)
+            editor.commit()
+        }
+
+        fun category(): ArrayList<String>? {
+
+            val settings = preferences
+
+            return if (settings.contains("category")) {
+                val jsonDatum = settings.getString("category", "")
+                val gson = Gson()
+                val type = object : TypeToken<List<String>>(){}.type!!
+                val datum : ArrayList<String> = gson.fromJson(jsonDatum, type)
+                datum
+            } else
+                null
         }
 
 

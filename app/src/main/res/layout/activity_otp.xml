@@ -32,7 +32,7 @@
             app:width="40dp"
             app:bar_enabled="true"
             app:bar_height="2dp"
-            app:length="6"
+            app:length="4"
             app:otp_text_size="24dp"/>
 
     </RelativeLayout>

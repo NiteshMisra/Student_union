@@ -192,6 +192,7 @@
                     android:layout_height="wrap_content"
                     android:text="STUDENT_NAME"
                     android:textSize="15sp"
+                    android:gravity="center"
                     android:fontFamily="@font/poppins_semibold"
                     android:textColor="#FF9800"
                     android:layout_margin="@dimen/fab_margin"/>
