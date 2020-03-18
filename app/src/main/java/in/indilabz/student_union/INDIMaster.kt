@@ -38,8 +38,6 @@ class INDIMaster : Application(){
             return instance!!.applicationContext as INDIMaster
         }
 
-        private val api = RetrofitInstance.instance().create(API::class.java)
-
         private val newApi = RetrofitInstance.newInstance().create(API::class.java)
 
         private val session = RetrofitInstance.session().create(API::class.java)
@@ -73,10 +71,6 @@ class INDIMaster : Application(){
 
                 otp = "886617"
             }
-        }
-
-        fun api(): API {
-            return api
         }
 
         fun newApi(): API {

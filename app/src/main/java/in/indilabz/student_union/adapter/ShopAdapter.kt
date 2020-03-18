@@ -46,7 +46,17 @@ class ShopAdapter(
 
         try {
             //binding.profileImage.scaleType = ImageView.ScaleType.FIT_XY
-            Glide.with(holder.preview.context).load("http://3.19.184.22/student-union/index.php/image/shop/${shop.shopResponseModel.shop_image}/234").into(holder.preview)
+            if (shop.shopResponseModel.shop_image == "" || shop.shopResponseModel.shop_image.isEmpty()){
+                holder.preview.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                holder.preview.setImageResource(R.drawable.ic_shopping_cart)
+            }else{
+                Glide
+                    .with(holder.preview.context)
+                    .load("http://3.19.184.22/student-union/index.php/image/shop/${shop.shopResponseModel.shop_image}/234")
+                    .placeholder(R.drawable.ic_shopping_cart)
+                    .into(holder.preview)
+                holder.preview.scaleType = ImageView.ScaleType.FIT_XY
+            }
         }catch (e : Exception){
 
         }

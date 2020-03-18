@@ -1,7 +1,9 @@
 package in.indilabz.student_union.response;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
-import org.jetbrains.annotations.Nullable;
+
 import in.indilabz.student_union.model.Result;
 
 public class RegisterResponse {
@@ -41,5 +43,21 @@ public class RegisterResponse {
     @Nullable
     public Result getResult() {
         return result;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setResult(@Nullable Result result) {
+        this.result = result;
     }
 }

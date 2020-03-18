@@ -55,7 +55,10 @@ public class Result {
     @SerializedName("id")
     private Integer id;
 
-    public Result(String contactNumber, String fullName, String email, String dob, String course, String year, String college, String fatherName, String permanentAddress, String currentAddress, String password, String updatedAt, String createdAt, String gender, String job, String accommodation, Integer id) {
+    @SerializedName("verified")
+    private Integer verified;
+
+    public Result(String contactNumber, String fullName, String email, String dob, String course, String year, String college, String fatherName, String permanentAddress, String currentAddress, String password, String updatedAt, String createdAt, String gender, String job, String accommodation, Integer id, Integer verified) {
         this.contactNumber = contactNumber;
         this.fullName = fullName;
         this.email = email;
@@ -73,6 +76,7 @@ public class Result {
         this.job = job;
         this.accommodation = accommodation;
         this.id = id;
+        this.verified = verified;
     }
 
     public String getContactNumber() {
@@ -141,5 +145,9 @@ public class Result {
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getVerified() {
+        return verified;
     }
 }

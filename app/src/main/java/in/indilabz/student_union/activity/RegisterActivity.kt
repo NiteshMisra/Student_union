@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.gson.Gson
 import dmax.dialog.SpotsDialog
+import java.util.*
 
 class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     DatePickerDialog.OnDateSetListener {
@@ -192,7 +193,8 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 return@setOnClickListener
             }
 
-            if (binding.password.editText!!.text != binding.confirmPassword.editText!!.text){
+            if (binding.password.editText!!.text.toString().toLowerCase(Locale.getDefault()) != binding.confirmPassword.editText!!.text.toString().toLowerCase(
+                    Locale.getDefault())){
                 Toaster.longt("Password not matching")
                 return@setOnClickListener
             }
@@ -225,6 +227,8 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
             dialog.dismiss()
             serverOtp = value.result.toString()
 
+            val newDob = dateOfBirth.substring(6) + "-" + dateOfBirth.substring(3,5) + "-" + dateOfBirth.substring(0,2)
+
             val register = Register(
                 binding.phone.editText!!.text.toString(),
                 binding.fullName.editText!!.text.toString(),
@@ -234,7 +238,7 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 binding.fName.editText!!.text.toString(),
                 binding.curAddress.editText!!.text.toString(),
                 binding.perAddress.editText!!.text.toString(),
-                dateOfBirth,
+                newDob,
                 binding.college.editText!!.text.toString(),
                 binding.password.editText!!.text.toString(),
                 gender,
@@ -254,7 +258,7 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        dateOfBirth = "$dayOfMonth-${month + 1}-$year"
+        dateOfBirth = "${String.format("%02d",dayOfMonth)}-${String.format("%02d",month+1)}-$year"
         binding.dob.text = dateOfBirth
     }
 

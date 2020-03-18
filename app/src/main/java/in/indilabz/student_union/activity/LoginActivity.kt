@@ -6,6 +6,7 @@ import `in`.indilabz.student_union.databinding.ActivityLoginBinding
 import `in`.indilabz.student_union.model.Result
 import `in`.indilabz.student_union.model.Student
 import `in`.indilabz.student_union.response.LoginResponse
+import `in`.indilabz.student_union.response.RegisterResponse
 import `in`.indilabz.student_union.rest.RetrofitInstance
 import `in`.indilabz.student_union.utils.Toaster
 import `in`.indilabz.yorneeds.utils.INDIPreferences
@@ -69,47 +70,44 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private val login = {  bool: Boolean, value: LoginResponse ->
+    private val login = {  bool: Boolean, value:RegisterResponse ->
 
-        Toaster.longt(value.message)
-
-        dialog.dismiss()
         if (bool && value.success) {
 
-            val result: Result? = value.result
-            if (result != null) {
-
-                val student2 = Student(
-                    result.id,
-                    result.fullName,
-                    result.contactNumber,
-                    result.email,
-                    "",
-                    result.password,
-                    result.dob,
-                    result.course,
-                    result.year,
-                    result.college,
-                    result.fatherName,
-                    result.currentAddress,
-                    result.permanentAddress,
-                    result.createdAt,
-                    result.updatedAt,
-                    result.gender,
-                    result.job,
-                    result.accommodation
-                )
-
-                INDIPreferences.user(student2)
-                INDIPreferences.session(true)
-
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }else{
-                Toaster.longt(value.message)
-            }
-        } else {
+            dialog.dismiss()
             Toaster.longt(value.message)
+            val result: Result = value.result!!
+
+            val student2 = Student(
+                result.id,
+                result.fullName,
+                result.contactNumber,
+                result.email,
+                "",
+                result.password,
+                result.dob,
+                result.course,
+                result.year,
+                result.college,
+                result.fatherName,
+                result.currentAddress,
+                result.permanentAddress,
+                result.createdAt,
+                result.updatedAt,
+                result.gender,
+                result.job,
+                result.accommodation
+            )
+
+            INDIPreferences.user(student2)
+            INDIPreferences.session(true)
+
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+
+        } else {
+            dialog.dismiss()
+            Toaster.longt(value.error)
         }
     }
 }

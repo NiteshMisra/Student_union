@@ -543,7 +543,7 @@ class RetrofitInstance : Constants {
 
     }
 
-    private class LoginRetrofitAPI (private val retrofitListener: (Boolean, LoginResponse) -> Unit?, calls: Call<LoginResponse>?) : AsyncTask<String, String, String>() {
+    private class LoginRetrofitAPI (private val retrofitListener: (Boolean, RegisterResponse) -> Unit?, calls: Call<RegisterResponse>?) : AsyncTask<String, String, String>() {
 
         init {
             loginCall = calls
@@ -551,9 +551,9 @@ class RetrofitInstance : Constants {
 
         override fun doInBackground(vararg params: String?): String? {
 
-            loginCall!!.clone().enqueue(object : Callback<LoginResponse> {
+            loginCall!!.clone().enqueue(object : Callback<RegisterResponse> {
 
-                override fun onResponse(call: Call<LoginResponse>?, response: Response<LoginResponse>?) {
+                override fun onResponse(call: Call<RegisterResponse>?, response: Response<RegisterResponse>?) {
 
                     if (response!!.isSuccessful) {
 
@@ -620,12 +620,12 @@ class RetrofitInstance : Constants {
 
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
 
                     //Log.d("TAG_RETROFIT_THROW", t.message)
                     try{
 
-                        val loginResponse2 = LoginResponse(false, t.message,null)
+                        val loginResponse2 = RegisterResponse(false,"", t.message,null)
                         retrofitListener.invoke(false, loginResponse2)
 
                     }catch (e : Exception){
@@ -972,31 +972,8 @@ class RetrofitInstance : Constants {
         private var updateCall : Call<UpdateResponse>? = null
         private var discountInfoCall : Call<DiscountInfoResponse>? = null
         private var registerCall : Call<RegisterResponse>? = null
-        private var loginCall : Call<LoginResponse>? = null
+        private var loginCall : Call<RegisterResponse>? = null
         private var categoryCall: Call<CategoryResponse>? = null
-
-        fun instance(): Retrofit {
-
-            client = OkHttpClient.Builder()
-                    .connectTimeout(10, TimeUnit.MINUTES)
-                    .readTimeout(10, TimeUnit.MINUTES)
-                    .writeTimeout(10, TimeUnit.MINUTES)
-                    .addInterceptor { chain ->
-                        val newRequest = chain.request().newBuilder()
-                                .build()
-                        chain.proceed(newRequest)
-                    }.build()
-
-
-            retrofit = Retrofit.Builder()
-                    .client(client!!)
-                    .baseUrl(Constants.BASE_URL)
-                    .addConverterFactory(ScalarsConverterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-            return retrofit as Retrofit
-        }
 
         fun newInstance(): Retrofit {
 
@@ -1050,7 +1027,7 @@ class RetrofitInstance : Constants {
             RetrofitAPI(retrofitListener, call).execute()
         }
 
-        fun getLoginRetrofit(call: Call<LoginResponse>?, retrofitListener: ( Boolean, LoginResponse) -> Unit?) {
+        fun getLoginRetrofit(call: Call<RegisterResponse>?, retrofitListener: ( Boolean, RegisterResponse) -> Unit?) {
             LoginRetrofitAPI(retrofitListener, call).execute()
         }
 

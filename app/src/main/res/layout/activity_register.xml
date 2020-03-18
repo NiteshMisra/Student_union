@@ -46,6 +46,9 @@
                     android:id="@+id/genderSpinner"
                     android:layout_width="match_parent"
                     android:padding="10dp"
+                    android:background="@drawable/rect_gray"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -71,6 +74,9 @@
                     android:layout_width="match_parent"
                     android:text="Date of Birth"
                     android:fontFamily="@font/poppins"
+                    android:background="@drawable/rect_gray"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
                     android:textSize="15sp"
                     android:drawableEnd="@drawable/ic_event_black_24dp"
                     android:padding="10dp"
@@ -135,6 +141,9 @@
                     android:id="@+id/accomodation"
                     android:layout_width="match_parent"
                     android:padding="10dp"
+                    android:background="@drawable/rect_gray"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -206,6 +215,9 @@
                     android:id="@+id/job"
                     android:layout_width="match_parent"
                     android:padding="10dp"
+                    android:background="@drawable/rect_gray"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"/>
 
                 <com.google.android.material.textfield.TextInputLayout

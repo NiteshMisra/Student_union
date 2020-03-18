@@ -43,7 +43,7 @@ interface API {
     fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<LoginResponse>
+    ): Call<RegisterResponse>
 
     @FormUrlEncoded
     @POST("otp/")
