@@ -28,15 +28,23 @@ class HomeFragment : Fragment() {
     private lateinit var alloted: TextView
     private lateinit var discount: TextView
     private lateinit var amount: TextView
-    private lateinit var searchCategory : Spinner
-    private var isScroll = false
-    private var position  = 0
-    private var currentItems : Int = 0
-    private var totalItems : Int = 0
-    private var scrollOutItems : Int = 0
+    private lateinit var searchCategory: Spinner
+    private var isLoading = true
+    private var position = 0
+    private var pastVisibleItems: Int = 0
+    private var visibleItemCount: Int = 0
+    private var totalItemCount: Int = 0
+    private var previous_total: Int = 0
+    private var viewThreshHold: Int = 10
     private lateinit var progressBar: ProgressBar
+    private lateinit var manager: GridLayoutManager
+    private var selectedCategory : Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
 
         val view = inflater.inflate(R.layout.fragment_home, container, false)
@@ -48,37 +56,12 @@ class HomeFragment : Fragment() {
         progressBar = view.findViewById(R.id.progress)
         searchCategory = view.findViewById(R.id.home_category)
 
-        val manager = GridLayoutManager(this.activity, 2)
+        manager = GridLayoutManager(this.activity, 2)
 
         recyclerView.layoutManager = manager
         recyclerView.setHasFixedSize(true)
 
         progressBar.visibility = View.GONE
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScroll = true
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                currentItems = manager.childCount
-                totalItems = manager.itemCount
-                scrollOutItems = manager.findFirstVisibleItemPosition()
-
-                if (isScroll && (currentItems + scrollOutItems == totalItems)){
-                    isScroll = false
-                    position++
-                    progressBar.visibility = View.VISIBLE
-                    getData()
-                }
-
-            }
-
-        })
 
         getData()
 
@@ -87,6 +70,29 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                visibleItemCount = manager.childCount
+                totalItemCount = manager.itemCount
+                pastVisibleItems = manager.findFirstVisibleItemPosition()
+
+                if (isLoading) {
+                    if (totalItemCount > previous_total) {
+                        isLoading = false
+                        previous_total = totalItemCount
+                    }
+                }
+                if (!isLoading && (totalItemCount - visibleItemCount) <= pastVisibleItems + viewThreshHold) {
+                    isLoading = true
+                    performPagination()
+                }
+
+            }
+
+        })
 
         swipe.setOnRefreshListener {
             position = 0
@@ -117,7 +123,7 @@ class HomeFragment : Fragment() {
 
                 val list = ArrayList<String>()
                 list.add("Select Category")
-                for (item in result2){
+                for (item in result2) {
                     list.add(item.title)
                 }
 
@@ -129,32 +135,39 @@ class HomeFragment : Fragment() {
 
                 categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 searchCategory.adapter = categoryAdapter
-                searchCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                searchCategory.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
 
-                    }
-
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        if (position != 0){
-                            swipe.isRefreshing = true
-                            RetrofitInstance.getDiscountRetrofit(
-                                INDIMaster.newApi().discount(
-                                    INDIPreferences.user()!!.id.toString(),
-                                    position,
-                                    (position - 1).toString()
-                                )
-                                , result
-                            )
                         }
-                    }
 
-                }
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            pos: Int,
+                            id: Long
+                        ) {
+                            if (pos != 0) {
+                                swipe.isRefreshing = true
+                                selectedCategory = pos - 1
+                                RetrofitInstance.getDiscountRetrofit(
+                                    INDIMaster.newApi().discount(
+                                        INDIPreferences.user()!!.id.toString(),
+                                        0,
+                                        selectedCategory.toString()
+                                    )
+                                    , result
+                                )
+                            }
+                        }
+
+                    }
 
                 RetrofitInstance.getDiscountRetrofit(
                     INDIMaster.newApi().discount(
                         INDIPreferences.user()!!.id.toString(),
                         position,
-                        result2[0].id.toString()
+                        selectedCategory.toString()
                     )
                     , result
                 )
@@ -171,7 +184,7 @@ class HomeFragment : Fragment() {
         if (bool) {
 
             val datumList = ArrayList<ShopResult>()
-            for (item: ShopResult in value.result) {
+            for (item: ShopResult in value.result!!) {
                 datumList.add(item)
             }
 
@@ -182,12 +195,36 @@ class HomeFragment : Fragment() {
             discount.text = "0"
             amount.text = "0"
 
-            if (datum.size == 0){
+            if (datum.size == 0) {
                 Toaster.longt("No Data is available")
             }
             adapter = ShopAdapter(datum)
             recyclerView.adapter = adapter
             adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun performPagination() {
+        position++
+        RetrofitInstance.getDiscountRetrofit(
+            INDIMaster.newApi().discount(
+                INDIPreferences.user()!!.id.toString(),
+                position,
+                selectedCategory.toString()
+            )
+        ) { _: Int, bool: Boolean, value: ShopResponse ->
+
+            swipe.isRefreshing = false
+            progressBar.visibility = View.GONE
+
+            if (bool) {
+
+                val datumList = ArrayList<ShopResult>()
+                for (item: ShopResult in value.result!!) {
+                    datumList.add(item)
+                }
+                adapter.addShops(datumList)
+            }
         }
     }
 

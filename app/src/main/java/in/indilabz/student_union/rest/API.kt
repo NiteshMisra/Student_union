@@ -58,6 +58,12 @@ interface API {
         @Path("category") category: String
     ): Call<ShopResponse>
 
+    @PATCH("discounts/availed/{id}/{page}")
+    fun history(
+        @Path("id") id : String,
+        @Path("page") page : Int
+    ): Call<ShopResponse>
+
     @FormUrlEncoded
     @POST("student/update/{id}")
     fun updateName(

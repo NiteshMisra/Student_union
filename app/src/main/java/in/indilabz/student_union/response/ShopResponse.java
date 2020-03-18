@@ -1,6 +1,9 @@
 package in.indilabz.student_union.response;
 
 import com.google.gson.annotations.SerializedName;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import in.indilabz.student_union.model.ShopResult;
 
@@ -12,10 +15,11 @@ public class ShopResponse {
     @SerializedName("error")
     private String error;
 
+    @Nullable
     @SerializedName("result")
     private ArrayList<ShopResult> result;
 
-    public ShopResponse(Boolean success, String error, ArrayList<ShopResult> result) {
+    public ShopResponse(Boolean success, String error, @Nullable ArrayList<ShopResult> result) {
         this.success = success;
         this.error = error;
         this.result = result;
@@ -29,7 +33,7 @@ public class ShopResponse {
         return error;
     }
 
-    public ArrayList<ShopResult> getResult() {
+    public @Nullable ArrayList<ShopResult> getResult() {
         return result;
     }
 }

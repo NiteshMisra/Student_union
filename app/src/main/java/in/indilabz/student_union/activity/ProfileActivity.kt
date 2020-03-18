@@ -5,12 +5,15 @@ package `in`.indilabz.student_union.activity
 import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
 import `in`.indilabz.student_union.databinding.ActivityProfileBinding
+import `in`.indilabz.student_union.extras.DatePickerFragment
 import `in`.indilabz.student_union.model.Student
+import `in`.indilabz.student_union.response.UpdateResponse
 import `in`.indilabz.student_union.rest.RetrofitInstance
 import `in`.indilabz.student_union.utils.Toaster
 import `in`.indilabz.yorneeds.utils.INDIPreferences
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -20,21 +23,24 @@ import android.provider.MediaStore
 import android.text.InputType
 import android.util.Base64
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import dmax.dialog.SpotsDialog
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        dateOfBirth = "${String.format("%02d",dayOfMonth)}-${String.format("%02d",month+1)}-$year"
+        updateDob(dateOfBirth)
+    }
 
     private lateinit var binding: ActivityProfileBinding
     private lateinit var dialog: AlertDialog
     private lateinit var profile: Student
     private lateinit var image: String
+    private var dateOfBirth : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +97,9 @@ class ProfileActivity : AppCompatActivity() {
         binding.address.text = profile.current_address
         binding.gender.text = profile.gender
         binding.fatherName.text = profile.father_name
-        binding.dob.text = profile.dob
+        val dob = profile.dob
+        val newDob = dob.substring(8) + "-" + dob.substring(5,7) + "-" + dob.substring(0,4)
+        binding.dob.text = newDob
         binding.college.text = profile.college
         binding.email.text = profile.email
         binding.accomodation.text = profile.accommodation
@@ -139,7 +147,8 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.dob.setOnClickListener {
-            editProfile("Dob", binding.dob)
+            val datePicker = DatePickerFragment(this)
+            datePicker.show(supportFragmentManager, "date picker")
         }
 
         binding.college.setOnClickListener {
@@ -170,30 +179,37 @@ class ProfileActivity : AppCompatActivity() {
                 "Submit"
             ) { _, _ ->
 
-                if (title == "Full name") {
-                    textView.text = taskEditText.text
-                    updateName()
-                } else if (title == "Phone") {
-                    textView.text = taskEditText.text
-                    updatePhone()
-                } else if (title == "Course") {
-                    textView.text = taskEditText.text
-                    updateCourse()
-                } else if (title == "Father name") {
-                    textView.text = taskEditText.text
-                    updateFatherName()
-                } else if (title == "Current address") {
-                    textView.text = taskEditText.text
-                    updateAddress()
-                } else if (title == "Dob") {
-                    textView.text = taskEditText.text
-                    updateDob()
-                } else if (title == "College") {
-                    textView.text = taskEditText.text
-                    updateCollege()
-                }else if (title == "Course Year") {
-                    textView.text = taskEditText.text
-                    updateCourseYear()
+                if (taskEditText.text.toString().isNotEmpty()){
+                    when (title) {
+                        "Full name" -> {
+                            textView.text = taskEditText.text
+                            updateName()
+                        }
+                        "Phone" -> {
+                            textView.text = taskEditText.text
+                            updatePhone()
+                        }
+                        "Course" -> {
+                            textView.text = taskEditText.text
+                            updateCourse()
+                        }
+                        "Father name" -> {
+                            textView.text = taskEditText.text
+                            updateFatherName()
+                        }
+                        "Current address" -> {
+                            textView.text = taskEditText.text
+                            updateAddress()
+                        }
+                        "College" -> {
+                            textView.text = taskEditText.text
+                            updateCollege()
+                        }
+                        "Course Year" -> {
+                            textView.text = taskEditText.text
+                            updateCourseYear()
+                        }
+                    }
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -215,8 +231,6 @@ class ProfileActivity : AppCompatActivity() {
             gender
         ) { dialog, which -> setGender(gender[which]) }
         val dialog = builder.create()
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
         dialog.show()
     }
 
@@ -229,8 +243,6 @@ class ProfileActivity : AppCompatActivity() {
             updateJob()
         }
         val dialog = builder.create()
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
         dialog.show()
     }
 
@@ -243,8 +255,6 @@ class ProfileActivity : AppCompatActivity() {
             updateAccommodation()
         }
         val dialog = builder.create()
-        dialog.setCancelable(false)
-        dialog.setCanceledOnTouchOutside(false)
         dialog.show()
     }
 
@@ -378,23 +388,29 @@ class ProfileActivity : AppCompatActivity() {
 
         dialog.show()
 
-        RetrofitInstance.updateRetrofit(
-            INDIMaster.newApi().updatePhone(
-                profile.id.toString(),
+        RetrofitInstance.getOTPRetrofit(
+            INDIMaster.newApi().sendOtp(
                 binding.phone.text.toString()
-            )
-        ) { _: Int, bool: Boolean, value: String ->
+            ),
+            otp
+        )
+    }
 
+    private val otp = { _: Int, bool: Boolean, value: UpdateResponse ->
+
+        if (bool && value.result != null) {
+
+            val serverOtp = value.result.toString()
             dialog.dismiss()
-            if (bool) {
-                Toaster.longt("Profile updated successfully")
-                val user: Student = INDIPreferences.user()!!
-                user.phone = binding.phone.text.toString()
-                INDIPreferences.user(user)
-            } else {
-                Toaster.longt(value)
-            }
 
+            val intent = Intent(this, ProfileOTP::class.java)
+            intent.putExtra("Mobile", binding.phone.text.toString())
+            intent.putExtra("Otp", serverOtp)
+            startActivity(intent)
+
+        } else {
+            dialog.dismiss()
+            Toast.makeText(this, value.error, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -470,22 +486,24 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateDob() {
+    private fun updateDob(dob : String ) {
 
         dialog.show()
 
+        val newDob = dob.substring(6) + "-" + dob.substring(3,5) + "-" + dob.substring(0,2)
         RetrofitInstance.updateRetrofit(
             INDIMaster.newApi().updateDob(
                 profile.id.toString(),
-                binding.dob.text.toString()
+                newDob
             )
         ) { _: Int, bool: Boolean, value: String ->
 
             dialog.dismiss()
             if (bool) {
                 Toaster.longt("Profile updated successfully")
+                binding.dob.text = dob
                 val user = INDIPreferences.user()
-                user!!.dob = binding.dob.text.toString()
+                user!!.dob = dob
                 INDIPreferences.user(user)
             } else {
                 Toaster.longt(value)

@@ -1,10 +1,7 @@
 package `in`.indilabz.student_union.activity
 
-import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
 import `in`.indilabz.student_union.fragment.HomeFragment
-import `in`.indilabz.student_union.response.CategoryResponse
-import `in`.indilabz.student_union.rest.RetrofitInstance
 import `in`.indilabz.yorneeds.utils.INDIPreferences
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +11,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,46 +18,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var fragmentManager: FragmentManager
-
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-
-        when(p0.itemId){
-            R.id.nav_home -> {
-                addFragment(HomeFragment())
-            }
-
-            R.id.nav_profile-> {
-                startActivity(Intent(this,ProfileActivity::class.java))
-            }
-
-            R.id.nav_terms -> {
-                startActivity(Intent(this,TermsAndCondition::class.java))
-            }
-
-            R.id.nav_logout -> {
-                INDIPreferences.session(false)
-                startActivity(Intent(this,LoginActivity::class.java))
-                finish()
-            }
-
-            R.id.nav_support -> {
-                startActivity(Intent(this,HelpDesk::class.java))
-            }
-
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    private fun addFragment(fragment : Fragment){
-
-        fragmentManager.beginTransaction()
-            .replace(R.id.fragment,fragment)
-            .addToBackStack(fragment.tag)
-            .commit()
-    }
-
     private lateinit var drawerLayout : DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +46,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+
+        when(p0.itemId){
+            R.id.nav_home -> {
+                fragmentManager = supportFragmentManager
+                        fragmentManager.beginTransaction()
+                            .replace(R.id.fragment,HomeFragment())
+                            .commit()
+            }
+
+            R.id.nav_profile-> {
+                startActivity(Intent(this,ProfileActivity::class.java))
+            }
+
+            R.id.nav_terms -> {
+                startActivity(Intent(this,TermsAndCondition::class.java))
+            }
+
+            R.id.nav_history -> {
+                startActivity(Intent(this,HistoryActivity::class.java))
+            }
+
+            R.id.nav_logout -> {
+                INDIPreferences.session(false)
+                startActivity(Intent(this,LoginActivity::class.java))
+                finish()
+            }
+
+            R.id.nav_support -> {
+                startActivity(Intent(this,HelpDesk::class.java))
+            }
+
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.noti_menu,menu)
         return true
@@ -112,12 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-
-            if (fragmentManager.backStackEntryCount > 0){
-                fragmentManager.popBackStack();
-            }else{
-                super.onBackPressed()
-            }
+            super.onBackPressed()
         }
 
     }

@@ -682,7 +682,7 @@ class RetrofitInstance : Constants {
 
                     } else {
 
-                        Log.e("login",response.body()!!.toString())
+                        //Log.e("login",response.body()!!.toString())
 
                         try {
                             Log.d("TAG_REAL_ERROR", response.errorBody()!!.string())
@@ -730,7 +730,7 @@ class RetrofitInstance : Constants {
 
                     //Log.d("TAG_RETROFIT_THROW", t.message)
                     try{
-                        val updateResponse = UpdateResponse(false,"",t.message,null)
+                        val updateResponse = UpdateResponse(false,t.message,"",null)
                         retrofitListener.invoke(404, false, updateResponse)
 
                     }catch (e : Exception){

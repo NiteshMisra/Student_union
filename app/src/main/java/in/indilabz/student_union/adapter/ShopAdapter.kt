@@ -29,16 +29,27 @@ class ShopAdapter(
         return  data.size
     }
 
+    public fun addShops(shops : ArrayList<ShopResult>){
+        for (shop in shops){
+            data.add(shop)
+        }
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ShopVH, position: Int) {
 
         val shop = data[position]
 
         holder.storeName.text = shop.shopResponseModel.name
         holder.currentAddress.text = shop.shopResponseModel.currentAddress
-        holder.offer.text = "${shop.discount} %"
+        holder.offer.text = "${shop.discount}%"
 
-        Glide.with(holder.preview.context)
-            .load(shop.shopResponseModel.shop_image).into(holder.preview)
+        try {
+            //binding.profileImage.scaleType = ImageView.ScaleType.FIT_XY
+            Glide.with(holder.preview.context).load("http://3.19.184.22/student-union/index.php/image/shop/${shop.shopResponseModel.shop_image}/234").into(holder.preview)
+        }catch (e : Exception){
+
+        }
 
         holder.parent.setOnClickListener{
 
