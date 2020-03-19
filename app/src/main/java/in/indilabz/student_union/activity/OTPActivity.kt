@@ -35,7 +35,6 @@ class OTPActivity : AppCompatActivity() {
         registerObject = Gson().fromJson(value, Register::class.java)
         binding.otpView.otpListener = listener
         serverOtp = intent.extras!!.getString("Otp")!!
-        Toaster.longt(serverOtp)
     }
 
     private val listener = object : OTPListener {
