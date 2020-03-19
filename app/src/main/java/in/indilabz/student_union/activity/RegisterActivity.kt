@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.gson.Gson
 import dmax.dialog.SpotsDialog
-import java.util.*
 
 class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener,
     DatePickerDialog.OnDateSetListener {
@@ -193,16 +192,13 @@ class RegisterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                 return@setOnClickListener
             }
 
-            if (binding.password.editText!!.text.toString().toLowerCase(Locale.getDefault()) != binding.confirmPassword.editText!!.text.toString().toLowerCase(
-                    Locale.getDefault())){
+            if (binding.password.editText!!.text.toString() != binding.confirmPassword.editText!!.text.toString()){
                 Toaster.longt("Password not matching")
                 return@setOnClickListener
             }
 
             executeRegister()
         }
-
-        binding.swipe.setOnRefreshListener { binding.swipe.isRefreshing = false }
     }
 
     private fun executeRegister() {

@@ -576,44 +576,13 @@ class RetrofitInstance : Constants {
 
                     } else {
 
-                        //Log.e("login",response.body()!!.toString())
-
-                        try {
-                            Log.d("TAG_REAL_ERROR", response.errorBody()!!.string())
-                        } catch (e: Exception) {
-
-                            Log.d("TAG_REAL_ERROR_EX", e.message!!)
+                        try{
+                            retrofitListener.invoke(false, INDIMaster.gson.fromJson(response.errorBody()!!.string(), RegisterResponse::class.java))
                         }
+                        catch (e : Exception){
 
-                        try {
-
-                            //Toaster.longToast(response.errorBody()!!.string())
-
-                            val apiError = INDIMaster.gson.fromJson(response.errorBody()!!.string(), ModelAPIError::class.java)
-
-                            if (apiError.error == "AUTH_ERROR") {
-
-                                if (INDIPreferences.preferenceEditor().clear().commit()) {
-
-                                    INDIMaster.applicationContext().startActivity(Intent(INDIMaster.applicationContext(), SplashActivity::class.java))
-                                    INDIPreferences.session(false)
-                                    INDIPreferences.backpress(false)
-                                }
-
-                            } else {
-
-                                retrofitListener.invoke(false, response.body()!!)
-                            }
-                        } catch (e: Exception) {
-
-                            /// Log.d("TAG_EXCEPTION_ERROR", e.toString())
-
-                            try{
-                                retrofitListener.invoke(false, response.body()!!)
-                            }
-                            catch (e : Exception){
-                                e.printStackTrace()
-                            }
+                            retrofitListener.invoke(false, RegisterResponse(false,"Error while getting data!", "",null))
+                            e.printStackTrace()
                         }
 
                     }
