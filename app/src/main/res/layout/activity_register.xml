@@ -315,7 +315,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:fontFamily="@font/poppins_semibold"
                 style="@style/Widget.MaterialComponents.Button"
-                android:background="@color/colorAccent"/>
+                android:backgroundTint="@color/colorAccent"/>
 
         </LinearLayout>
 

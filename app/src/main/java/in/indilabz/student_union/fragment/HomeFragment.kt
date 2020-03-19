@@ -1,11 +1,15 @@
+@file:Suppress("DEPRECATION")
+
 package `in`.indilabz.student_union.fragment
 
 import `in`.indilabz.student_union.INDIMaster
 import `in`.indilabz.student_union.R
+import `in`.indilabz.student_union.adapter.ItemAdapter
 import `in`.indilabz.student_union.adapter.ShopAdapter
 import `in`.indilabz.student_union.model.ShopResult
 import `in`.indilabz.student_union.response.CategoryResponse
 import `in`.indilabz.student_union.response.ShopResponse
+import `in`.indilabz.student_union.rest.HomeViewModel
 import `in`.indilabz.student_union.rest.RetrofitInstance
 import `in`.indilabz.student_union.utils.Toaster
 import `in`.indilabz.yorneeds.utils.INDIPreferences
@@ -15,30 +19,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.gallery.GridSpacingItemDecoration
+import com.gallery.extra.Coroutines
 
 class HomeFragment : Fragment() {
 
-    private val datum: ArrayList<ShopResult> = ArrayList()
-    private lateinit var adapter: ShopAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipe: SwipeRefreshLayout
-    private lateinit var alloted: TextView
     private lateinit var discount: TextView
     private lateinit var amount: TextView
     private lateinit var searchCategory: Spinner
-    private var isLoading = true
-    private var position = 0
-    private var pastVisibleItems: Int = 0
-    private var visibleItemCount: Int = 0
-    private var totalItemCount: Int = 0
-    private var previous_total: Int = 0
-    private var viewThreshHold: Int = 10
-    private lateinit var progressBar: ProgressBar
-    private lateinit var manager: GridLayoutManager
-    private var selectedCategory : Int = 0
+    private lateinit var alloted: TextView
+    private var selectedCategory: Int = 0
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,18 +50,12 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         recyclerView = view!!.findViewById(R.id.recycler)
         swipe = view.findViewById(R.id.swipe)
+        searchCategory = view.findViewById(R.id.home_category)
         alloted = view.findViewById(R.id.allotted)
         discount = view.findViewById(R.id.discount)
         amount = view.findViewById(R.id.amount)
-        progressBar = view.findViewById(R.id.progress)
-        searchCategory = view.findViewById(R.id.home_category)
 
-        manager = GridLayoutManager(this.activity, 2)
-
-        recyclerView.layoutManager = manager
-        recyclerView.setHasFixedSize(true)
-
-        progressBar.visibility = View.GONE
+        viewModel = ViewModelProviders.of(activity!!).get(HomeViewModel::class.java)
 
         getData()
 
@@ -71,31 +65,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                visibleItemCount = manager.childCount
-                totalItemCount = manager.itemCount
-                pastVisibleItems = manager.findFirstVisibleItemPosition()
-
-                if (isLoading) {
-                    if (totalItemCount > previous_total) {
-                        isLoading = false
-                        previous_total = totalItemCount
-                    }
-                }
-                if (!isLoading && (totalItemCount - visibleItemCount) <= pastVisibleItems + viewThreshHold) {
-                    isLoading = true
-                    performPagination()
-                }
-
-            }
-
-        })
-
         swipe.setOnRefreshListener {
-            position = 0
+            selectedCategory = 0
             getData()
         }
     }
@@ -150,83 +121,38 @@ class HomeFragment : Fragment() {
                             if (pos != 0) {
                                 swipe.isRefreshing = true
                                 selectedCategory = pos - 1
-                                RetrofitInstance.getDiscountRetrofit(
-                                    INDIMaster.newApi().discount(
-                                        INDIPreferences.user()!!.id.toString(),
-                                        0,
-                                        selectedCategory.toString()
-                                    )
-                                    , result
-                                )
+                                load()
                             }
                         }
 
                     }
 
-                RetrofitInstance.getDiscountRetrofit(
-                    INDIMaster.newApi().discount(
-                        INDIPreferences.user()!!.id.toString(),
-                        position,
-                        selectedCategory.toString()
-                    )
-                    , result
-                )
+                load()
 
             }
         }
     }
 
-    private val result = { _: Int, bool: Boolean, value: ShopResponse ->
-
-        swipe.isRefreshing = false
-        progressBar.visibility = View.GONE
-
-        if (bool) {
-
-            val datumList = ArrayList<ShopResult>()
-            for (item: ShopResult in value.result!!) {
-                datumList.add(item)
-            }
-
-            datum.clear()
-            datum.addAll(datumList)
-
-            alloted.text = datum.size.toString()
-            discount.text = "0"
-            amount.text = "0"
-
-            if (datum.size == 0) {
-                Toaster.longt("No Data is available")
-            }
-            adapter = ShopAdapter(datum)
-            recyclerView.adapter = adapter
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun performPagination() {
-        position++
-        RetrofitInstance.getDiscountRetrofit(
-            INDIMaster.newApi().discount(
-                INDIPreferences.user()!!.id.toString(),
-                position,
-                selectedCategory.toString()
-            )
-        ) { _: Int, bool: Boolean, value: ShopResponse ->
-
+    private fun load() {
+        val mAdapter = ItemAdapter()
+        Coroutines.main {
+            viewModel.getImages(selectedCategory).observe(this,
+                Observer<PagedList<ShopResult>> { photos ->
+                    mAdapter.submitList(photos)
+                    alloted.text = "0"
+                    discount.text = "0"
+                    amount.text = "0"
+                })
             swipe.isRefreshing = false
-            progressBar.visibility = View.GONE
+        }
 
-            if (bool) {
-
-                val datumList = ArrayList<ShopResult>()
-                for (item: ShopResult in value.result!!) {
-                    datumList.add(item)
-                }
-                adapter.addShops(datumList)
-            }
+        recyclerView.apply {
+            layoutManager = GridLayoutManager(activity, 2)
+            addItemDecoration(GridSpacingItemDecoration(2, 5, false))
+            itemAnimator = DefaultItemAnimator()
+            setHasFixedSize(false)
+            adapter = mAdapter
         }
     }
-
 
 }
